@@ -60,11 +60,7 @@ def lightMaze(maze,dim,flammabilityRate):
             neighbors = []
             numFire=0
             neighbors.append((i+1, j))
-            neighbors.append((i+1, j+1))
-            neighbors.append((i + 1, j-1))
             neighbors.append((i-1, j))
-            neighbors.append((i - 1, j+1))
-            neighbors.append((i - 1, j-1))
             neighbors.append((i, j+1))
             neighbors.append((i, j-1))
             for neighbor in neighbors:
