@@ -36,6 +36,53 @@ def dfs(maze, loc1, loc2):
         closed.add(item)
     return False
 
+
+
+# method to get an actual path from dfs (uses parent structure, i.e a dictionary that holds each parent for traceback)
+# returns a deque structure which is the path found from loc1 to loc2
+def dfsGetPath(maze,loc1,loc2):
+    # dictionary to keep source->parent pairs will help when going back
+    parents={}
+    # same logic for dfs below
+    dim = len(maze)
+    # stack for fringe
+    fringe = deque()
+    fringe.append(loc1)
+    # closed set implemented as python collection set
+    closed = set()
+    while fringe:
+        item = fringe.pop()
+        # checking if item is loc2
+        if item == loc2:
+            break
+        # adding neighbors to fringe if they arent in closed set and if they arent blocked
+        # 4 neighbors for each cell
+        neighbors = []
+        neighbors.append((item[0] + 1, item[1]))
+        neighbors.append((item[0] - 1, item[1]))
+        neighbors.append((item[0], item[1] - 1))
+        neighbors.append((item[0], item[1] + 1))
+        for neighbor in neighbors:
+            if neighbor not in closed:
+                if neighbor[0] < dim and neighbor[0] >= 0 and neighbor[1] < dim and neighbor[1] >= 0:
+                    if maze[neighbor[0]][neighbor[1]] != 1:
+                        fringe.append(neighbor)
+                        # updating parent
+                        parents[neighbor]=item
+        closed.add(item)
+    # logic for returning a path
+    # going through traceback from (item)
+    traced=loc2
+    path = deque()
+    while traced in parents:
+       path.insert(0,traced)
+       traced=parents[traced]
+    # last item is starting point
+    path.insert(0,traced)
+    return path
+
+
+
 # returns a list of tuples corresponding to each obstacle density incremented by 0.05
 # so far the best size for not painfully slow computation is size 1000
 # sample size is the number of times to run the test for each blocking density
