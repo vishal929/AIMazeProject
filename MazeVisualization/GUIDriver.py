@@ -1,6 +1,6 @@
 #import for testing
 from Preliminaries.mazeGenerator import generateMaze
-from Preliminaries.DFS import dfs
+from Preliminaries import DFS
 #tkinter for simple GUI
 import tkinter
 # idea: first show matrix with obstacles/initial fire
@@ -38,13 +38,14 @@ class Maze(tkinter.Tk):
       flame = tkinter.Label(self.labelFrame,text="Flammability Rate:"+str(flammabilityRate))
       obstacle.grid(row=0,column=1)
       flame.grid(row=0,column=0)
-      self.mainloop()
-   def updateMaze(self):
-      # method to just redraw the maze after every step
-      self.update()
+      tkinter.Scrollbar(self.labelFrame,orient="horizontal")
+      tkinter.Scrollbar(self.labelFrame, orient="vertical")
+
 
 # test for now
-testMaze= generateMaze(10, 0.3)
-hi = Maze(testMaze,0.3,0)
-
-print(dfs(testMaze,(0,0),(9,9)))
+testMaze= generateMaze(10, 0.2)
+path = DFS.dfsGetPath(testMaze,(0,0),(len(testMaze)-1,len(testMaze)-1))
+for tup in path:
+   testMaze[tup[0]][tup[1]]=2
+hi = Maze(testMaze,0.2,0)
+hi.mainloop()

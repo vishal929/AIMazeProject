@@ -24,10 +24,11 @@ def dfs(maze, loc1, loc2):
         # adding neighbors to fringe if they arent in closed set and if they arent blocked
         # 4 neighbors for each cell
         neighbors = []
-        neighbors.append((item[0] + 1, item[1]))
         neighbors.append((item[0] - 1, item[1]))
         neighbors.append((item[0], item[1] - 1))
+        neighbors.append((item[0] + 1, item[1]))
         neighbors.append((item[0], item[1] + 1))
+
         for neighbor in neighbors:
             if neighbor not in closed:
                 if neighbor[0]<dim and neighbor[0]>=0 and neighbor[1]<dim and neighbor[1]>=0:
@@ -58,9 +59,10 @@ def dfsGetPath(maze,loc1,loc2):
         # adding neighbors to fringe if they arent in closed set and if they arent blocked
         # 4 neighbors for each cell
         neighbors = []
-        neighbors.append((item[0] + 1, item[1]))
+
         neighbors.append((item[0] - 1, item[1]))
         neighbors.append((item[0], item[1] - 1))
+        neighbors.append((item[0] + 1, item[1]))
         neighbors.append((item[0], item[1] + 1))
         for neighbor in neighbors:
             if neighbor not in closed:
@@ -75,10 +77,10 @@ def dfsGetPath(maze,loc1,loc2):
     traced=loc2
     path = deque()
     while traced in parents:
-       path.insert(0,traced)
+       path.appendleft(traced)
        traced=parents[traced]
     # last item is starting point
-    path.insert(0,traced)
+    path.appendleft(traced)
     return path
 
 
