@@ -45,11 +45,14 @@ def initializeFire(maze, dim):
     col = randint(0,dim-1)
     # randomly chosen position above will be the starting point for the fire
     maze[row][col]=-1
+    return (row,col)
 
 
 
 # method below for performing fire generation given flammability rate
-def lightMaze(maze,dim,flammabilityRate):
+def lightMaze(maze,flammabilityRate):
+   newFireSpots=[]
+   dim = len(maze)
    if flammabilityRate<0 or flammabilityRate>1:
        raise ValueError("Flammability rate must be between 0 and 1 (inclusive)!")
    # iterating and adjusting fire
@@ -72,6 +75,8 @@ def lightMaze(maze,dim,flammabilityRate):
             if random()<probFire:
                 # then now this cell is on fire
                 maze[i][j] = -1
+                newFireSpots.append((i,j))
+   return newFireSpots
 
 # prints the maze to stdout
 # O=open/free, F=fire, B=blocked, A=agent
