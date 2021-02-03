@@ -40,7 +40,8 @@ def generateMaze(dim, obstacleDensity):
     return maze
 
 # method below for initializing fire in the maze
-def initializeFire(maze, dim):
+def initializeFire(maze):
+    dim = len(maze)
     row = randint(0,dim-1)
     col = randint(0,dim-1)
     # randomly chosen position above will be the starting point for the fire
