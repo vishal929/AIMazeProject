@@ -31,3 +31,4 @@ def doStrategyOne(maze,flammabilityRate):
                 return step
     # if we reached the end we can just return the last point
     return (len(maze)-1,len(maze)-1)
+
