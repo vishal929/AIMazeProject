@@ -34,6 +34,18 @@ def guiBFS(maze):
         return False
     return True
 
+# same as above, just using A*
+def guiAStar(maze):
+    path=AStar.aStarGetPath(maze,(0,0),(len(maze)-1,len(maze)-1))
+    lastLoc = None
+    for loc in path:
+        lastLoc = loc
+        # for shading path agent takes blue in the canvas
+        maze[loc[0]][loc[1]] = 2
+    if lastLoc != (0, 0):
+        return False
+    return True
+
 
 # flame generation strategies below adapted from other files for GUI use
 # path of tuples is included here so that the agent can take a single step

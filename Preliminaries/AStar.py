@@ -15,10 +15,13 @@ def aStar(maze, loc1, loc2):
     # Data structure for fringe
     fringe = PriorityQueue()
     # Fringe stored as tuples in the form (distance from loc1 to loc2, (loc1 x, loc1 y))
-    fringe.put((getHeuristic(loc1, loc2), loc1))
+    fringe.put((0, loc1))
     # closed set implemented as python collection set
     closed = set()
-    while fringe:
+    # distances from parent dictionary
+    distances = {}
+    distances[loc1] = 0
+    while not fringe.empty():
         item = fringe.get()
         # checking if item is loc2
         if item[1] == loc2:
@@ -36,7 +39,8 @@ def aStar(maze, loc1, loc2):
             if neighbor not in closed:
                 if neighbor[0] < dim and neighbor[0] >= 0 and neighbor[1] < dim and neighbor[1] >= 0:
                     if maze[neighbor[0]][neighbor[1]] != 1:
-                        fringe.put((getHeuristic(loc1, loc2), neighbor))
+                        distances[neighbor] = distances[item[1]] + 1
+                        fringe.put((getHeuristic(neighbor, loc2)+distances[neighbor], neighbor))
         closed.add(item[1])
     return False
 
@@ -49,10 +53,13 @@ def aStarGetPath(maze,loc1,loc2):
     # Data structure for fringe
     fringe = PriorityQueue()
     # Fringe stored as tuples in the form (distance to loc2 from loc1, (loc1 x, loc1 y))
-    fringe.put((getHeuristic(loc1, loc2), loc1))
+    fringe.put((0, loc1))
     # closed set implemented as python collection set
     closed = set()
-    while fringe:
+    # distances from parent dictionary
+    distances={}
+    distances[loc1]=0
+    while not fringe.empty():
         item = fringe.get()
         # checking if item is loc2
         if item[1] == loc2:
@@ -70,7 +77,8 @@ def aStarGetPath(maze,loc1,loc2):
             if neighbor not in closed:
                 if neighbor[0] < dim and neighbor[0] >= 0 and neighbor[1] < dim and neighbor[1] >= 0:
                     if maze[neighbor[0]][neighbor[1]] != 1:
-                        fringe.put((getHeuristic(neighbor, loc2), neighbor))
+                        distances[neighbor]=distances[item[1]]+1
+                        fringe.put((getHeuristic(neighbor, loc2)+distances[neighbor], neighbor))
                         # updating parent
                         parents[neighbor]=item[1]
         closed.add(item[1])

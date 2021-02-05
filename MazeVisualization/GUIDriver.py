@@ -12,52 +12,6 @@ import tkinter
 # if goal found, success text displayed, otherwise failure text
 
 # widget to represent our maze, complete with dim label, obstacleDensity label, and fireRate label
-class Maze(tkinter.Tk):
-   # the maze itself is a grid of cells (cells are tkinter labels)
-   def __init__(self,  dim, obstacleDensity, flammabilityRate):
-      super().__init__()
-      tkinter.Grid.rowconfigure(self,0,weight=1)
-      tkinter.Grid.columnconfigure(self,0,weight=1)
-      self.dim=dim
-      self.maze=generateMaze(dim,obstacleDensity)
-      self.obstacleDensity=obstacleDensity
-      self.flammabilityRate=flammabilityRate
-      self.mazeFrame=tkinter.Frame(self)
-      self.mazeFrame.grid(column=0,row=0,sticky=tkinter.N+tkinter.S+tkinter.E+tkinter.W)
-      self.labelFrame=tkinter.Frame(self)
-      self.labelFrame.grid(column=0,row=1)
-      for i in range(dim):
-         tkinter.Grid.rowconfigure(self.mazeFrame,i,weight=1)
-         for j in range(dim):
-            tkinter.Grid.columnconfigure(self.mazeFrame,j,weight=1)
-            if self.maze[i][j]==1:
-               cell=tkinter.Label(self.mazeFrame,bg="black",text=self.maze[i][j],borderwidth=2,relief="solid")
-            elif self.maze[i][j]==-1:
-               cell=tkinter.Label(self.mazeFrame,bg="red",text=self.maze[i][j],borderwidth=2,relief="solid")
-            elif maze[i][j]==2:
-               cell = tkinter.Label(self.mazeFrame, bg="blue", text=self.maze[i][j], borderwidth=2, relief="solid")
-            else:
-               cell = tkinter.Label(self.mazeFrame, bg="white", text=self.maze[i][j], borderwidth=2, relief="solid")
-            cell.config(height=2,width=10)
-            cell.grid(column=j,row=i,sticky=tkinter.N+tkinter.S+tkinter.E+tkinter.W)
-      #adding labels to bottom of window
-      obstacle=tkinter.Label(self.labelFrame,text="Obstacle Density:"+str(obstacleDensity))
-      flame = tkinter.Label(self.labelFrame,text="Flammability Rate:"+str(flammabilityRate))
-      obstacle.grid(row=0,column=1)
-      flame.grid(row=0,column=0)
-      tkinter.Scrollbar(self.labelFrame,orient="horizontal")
-      tkinter.Scrollbar(self.labelFrame, orient="vertical")
-
-   # method to run dfs on our canvas
-   def showDFS(self):
-      GUIAgentStep.guiDFS(self.maze)
-      self.mainloop()
-
-   # method to run bfs on our canvas
-   def showBFS(self):
-      GUIAgentStep.guiBFS(self.maze)
-      self.mainloop()
-
 
 class CanvasMaze(tkinter.Tk):
    # the maze itself is a grid of cells (cells are tkinter labels)
@@ -112,6 +66,13 @@ class CanvasMaze(tkinter.Tk):
       self.title("BFS on" + "Maze with obstacleDensity=" + str(self.obstacleDensity) + " flameDensity=" + str(self.flammabilityRate))
       self.mainloop()
 
+   # should be the same as BFS above, just could be faster due to pruning with euclidean distance
+   def showAStar(self):
+      GUIAgentStep.guiAStar(self.maze)
+      self.updateDrawing()
+      self.title("A* on" + "Maze with obstacleDensity=" + str(self.obstacleDensity) + " flameDensity=" + str(
+         self.flammabilityRate))
+      self.mainloop()
    # method to gradually show fire steps for strategy 1
    def showStrategyOneStep(self,path):
       toContinue=GUIAgentStep.guiStrategyOne(self.maze,self.flammabilityRate,path)
@@ -175,7 +136,7 @@ class ResizingCanvas(tkinter.Canvas):
 
 # test for now
 
-hi = CanvasMaze(10,0,0.3)
-hi.showGradualStrategyTwo()
+hi = CanvasMaze(10,0.2,0)
+hi.showAStar()
 hi.mainloop()
 
