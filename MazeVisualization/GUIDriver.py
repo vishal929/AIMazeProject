@@ -1,6 +1,10 @@
 #import for testing
+import Strategy1
+import Strategy2
 from Preliminaries.mazeGenerator import generateMaze
+from Preliminaries   import BFS
 from Preliminaries import DFS
+from MazeVisualization import GUIAgentStep
 #tkinter for simple GUI
 import tkinter
 # idea: first show matrix with obstacles/initial fire
@@ -10,13 +14,12 @@ import tkinter
 # widget to represent our maze, complete with dim label, obstacleDensity label, and fireRate label
 class Maze(tkinter.Tk):
    # the maze itself is a grid of cells (cells are tkinter labels)
-   def __init__(self,  maze, obstacleDensity, flammabilityRate):
+   def __init__(self,  dim, obstacleDensity, flammabilityRate):
       super().__init__()
       tkinter.Grid.rowconfigure(self,0,weight=1)
       tkinter.Grid.columnconfigure(self,0,weight=1)
-      dim = len(maze)
       self.dim=dim
-      self.maze=maze
+      self.maze=generateMaze(dim,obstacleDensity)
       self.obstacleDensity=obstacleDensity
       self.flammabilityRate=flammabilityRate
       self.mazeFrame=tkinter.Frame(self)
@@ -27,14 +30,14 @@ class Maze(tkinter.Tk):
          tkinter.Grid.rowconfigure(self.mazeFrame,i,weight=1)
          for j in range(dim):
             tkinter.Grid.columnconfigure(self.mazeFrame,j,weight=1)
-            if maze[i][j]==1:
-               cell=tkinter.Label(self.mazeFrame,bg="black",text=maze[i][j],borderwidth=2,relief="solid")
-            elif maze[i][j]==-1:
-               cell=tkinter.Label(self.mazeFrame,bg="red",text=maze[i][j],borderwidth=2,relief="solid")
+            if self.maze[i][j]==1:
+               cell=tkinter.Label(self.mazeFrame,bg="black",text=self.maze[i][j],borderwidth=2,relief="solid")
+            elif self.maze[i][j]==-1:
+               cell=tkinter.Label(self.mazeFrame,bg="red",text=self.maze[i][j],borderwidth=2,relief="solid")
             elif maze[i][j]==2:
-               cell = tkinter.Label(self.mazeFrame, bg="blue", text=maze[i][j], borderwidth=2, relief="solid")
+               cell = tkinter.Label(self.mazeFrame, bg="blue", text=self.maze[i][j], borderwidth=2, relief="solid")
             else:
-               cell = tkinter.Label(self.mazeFrame, bg="white", text=maze[i][j], borderwidth=2, relief="solid")
+               cell = tkinter.Label(self.mazeFrame, bg="white", text=self.maze[i][j], borderwidth=2, relief="solid")
             cell.config(height=2,width=10)
             cell.grid(column=j,row=i,sticky=tkinter.N+tkinter.S+tkinter.E+tkinter.W)
       #adding labels to bottom of window
@@ -45,34 +48,108 @@ class Maze(tkinter.Tk):
       tkinter.Scrollbar(self.labelFrame,orient="horizontal")
       tkinter.Scrollbar(self.labelFrame, orient="vertical")
 
+   # method to run dfs on our canvas
+   def showDFS(self):
+      GUIAgentStep.guiDFS(self.maze)
+      self.mainloop()
+
+   # method to run bfs on our canvas
+   def showBFS(self):
+      GUIAgentStep.guiBFS(self.maze)
+      self.mainloop()
+
+
 class CanvasMaze(tkinter.Tk):
    # the maze itself is a grid of cells (cells are tkinter labels)
-   def __init__(self,  maze, obstacleDensity, flammabilityRate):
+   def __init__(self,  dim, obstacleDensity, flammabilityRate):
       super().__init__()
-      dim = len(maze)
       self.cellSize=30
       self.dim=dim
-      self.maze=maze
-      self.width=self.cellSize*len(maze)
-      self.height=self.cellSize*len(maze)
+      self.maze=generateMaze(dim,obstacleDensity)
+      self.width=self.cellSize*len(self.maze)
+      self.height=self.cellSize*len(self.maze)
       self.obstacleDensity=obstacleDensity
       self.flammabilityRate=flammabilityRate
       self.mazeCanvas=ResizingCanvas(self,width=self.width,height=self.height,background="white")
       self.mazeCanvas.bind()
       self.mazeCanvas.pack(expand="yes")
-      for i in range(dim):
+      self.rectangles=[]
+      # initializing rectangles
+      for i in range(self.dim):
          x=i*self.cellSize
-         for j in range(dim):
+         rects=[]
+         for j in range(self.dim):
             y=j*self.cellSize
-            if maze[i][j]==1:
-               self.mazeCanvas.create_rectangle(x,y,x+self.cellSize,y+self.cellSize,fill="black")
-            elif maze[i][j]==-1:
-               self.mazeCanvas.create_rectangle(x, y, x + self.cellSize, y + self.cellSize, fill="red")
-            elif maze[i][j]==2:
-               self.mazeCanvas.create_rectangle(x, y, x + self.cellSize, y + self.cellSize, fill="blue")
+            rec=self.mazeCanvas.create_rectangle(x, y, x + self.cellSize, y + self.cellSize, fill="white")
+            rects.append(rec)
+         self.rectangles.append(rects)
+   # method to update canvas
+   def updateDrawing(self):
+      for i in range(self.dim):
+         x=i*self.cellSize
+         for j in range(self.dim):
+            y=j*self.cellSize
+            if self.maze[i][j]==1:
+               self.mazeCanvas.itemconfig(self.rectangles[i][j],fill="black")
+            elif self.maze[i][j]==-1:
+               self.mazeCanvas.itemconfig(self.rectangles[i][j], fill="red")
+            elif self.maze[i][j]==2:
+               self.mazeCanvas.itemconfig(self.rectangles[i][j], fill="blue")
             else:
-               self.mazeCanvas.create_rectangle(x, y, x + self.cellSize, y + self.cellSize, fill="white")
+               self.mazeCanvas.itemconfig(self.rectangles[i][j], fill="white")
       self.mazeCanvas.addtag_all("all")
+   # method to run dfs on our canvas
+   def showDFS(self):
+      GUIAgentStep.guiDFS(self.maze)
+      self.updateDrawing()
+      self.title("DFS on"+"Maze with obstacleDensity="+str(self.obstacleDensity)+" flameDensity="+str(self.flammabilityRate))
+      self.mainloop()
+
+   # method to run bfs on our canvas
+   def showBFS(self):
+      GUIAgentStep.guiBFS(self.maze)
+      self.updateDrawing()
+      self.title("BFS on" + "Maze with obstacleDensity=" + str(self.obstacleDensity) + " flameDensity=" + str(self.flammabilityRate))
+      self.mainloop()
+
+   # method to gradually show fire steps for strategy 1
+   def showStrategyOneStep(self,path):
+      toContinue=GUIAgentStep.guiStrategyOne(self.maze,self.flammabilityRate,path)
+      self.updateDrawing()
+      if toContinue[0]:
+         self.after(1000,self.showStrategyOneStep,toContinue[2])
+
+   # driver for above method
+   def showGradualStrategyOne(self):
+      self.showStrategyOneStep(None)
+
+
+   # below method does not show gradually
+   def showEntireStrategyOne(self):
+       Strategy1.doStrategyOne(self.maze,self.flammabilityRate)
+       self.updateDrawing()
+       self.mainloop()
+
+
+   # method to gradually show fire steps for strategy 2
+   def showStrategyTwoStep(self,currLoc):
+      toContinue = GUIAgentStep.guiStrategyTwo(self.maze, self.flammabilityRate,currLoc)
+      self.updateDrawing()
+      if toContinue[0]:
+         self.after(1000, self.showStrategyTwoStep, toContinue[1])
+
+   # driver for above method
+   def showGradualStrategyTwo(self):
+      self.showStrategyTwoStep(None)
+
+   # method that does not show gradually below
+   def showEntireStrategyTwo(self):
+      Strategy2.doStrategyTwo(self.maze,self.flammabilityRate)
+      self.updateDrawing()
+      self.mainloop()
+
+
+
 
 
 #resizing canvas code from
@@ -97,10 +174,8 @@ class ResizingCanvas(tkinter.Canvas):
 
 
 # test for now
-testMaze= generateMaze(100, 0.2)
-path = DFS.dfsGetPath(testMaze,(0,0),(len(testMaze)-1,len(testMaze)-1))
-for tup in path:
-   testMaze[tup[0]][tup[1]]=2
-hi = CanvasMaze(testMaze,0.2,0)
-hi.title("Maze with obstacleDensity=0.2 flameDensity=0")
+
+hi = CanvasMaze(10,0,0.3)
+hi.showGradualStrategyTwo()
 hi.mainloop()
+

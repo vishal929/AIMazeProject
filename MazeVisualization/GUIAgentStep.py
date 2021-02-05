@@ -50,21 +50,23 @@ def guiStrategyOne(maze,flammabilityRate,path):
        maze[0][0]=2
        # initializing fire
        mazeGenerator.initializeFire(maze)
-       return (True,(0,0))
+       return (True,(0,0),path)
    if not path:
        # then we hit the end
-       return False, (len(maze) - 1, len(maze) - 1)
+       return False, (len(maze) - 1, len(maze) - 1),path
    # checking where agent will move
    locToMove = path.popleft()
    if maze[locToMove[0]][locToMove[1]]==-1:
        # then the agent moved into fire
-       return (False,(locToMove))
+       return (False,(locToMove),path)
    else:
        # then we move agent and generate fire
        maze[locToMove[0]][locToMove[1]]=2
        fireSpots=mazeGenerator.lightMaze(maze,flammabilityRate)
        if locToMove in fireSpots:
-           return (False,(locToMove))
+           return (False,locToMove,path)
+       else:
+           return (True,locToMove,path)
 
 # same step implementation as above, but with strategy 2 mentality
 # i.e after each step we recalculate the shortest path
@@ -77,8 +79,14 @@ def guiStrategyTwo(maze,flammabilityRate,currLoc):
         mazeGenerator.initializeFire(maze)
         # returning bool,currLoc
         return (True,(0,0))
-    # if currLoc is not none, we recalculate and pick first step
-    locToMove = BFS.bfsGetPath(maze,currLoc,(len(maze)-1,len(maze)-1)).popleft()
+    # if currLoc is not none, we recalculate and pick second step because first step is current pos
+    path =BFS.bfsGetPath(maze,currLoc,(len(maze)-1,len(maze)-1))
+
+    path.popleft()
+    if not path:
+        # then we have an empty deque
+        return False, currLoc
+    locToMove = path.popleft()
     if maze[locToMove[0]][locToMove[1]]==-1:
         return (False,locToMove)
     else:
@@ -88,6 +96,8 @@ def guiStrategyTwo(maze,flammabilityRate,currLoc):
         litSpots=mazeGenerator.lightMaze(maze,flammabilityRate)
         if locToMove in litSpots:
             return (False,locToMove)
-    if locToMove == (len(maze)-1,len(maze)-1):
-        # we are done now
-        return (False,locToMove)
+        elif locToMove == (len(maze)-1,len(maze)-1):
+            # we are done now
+            return (False,locToMove)
+        else:
+            return (True,locToMove)

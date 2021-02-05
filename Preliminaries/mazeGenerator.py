@@ -45,7 +45,16 @@ def initializeFire(maze):
     row = randint(0,dim-1)
     col = randint(0,dim-1)
     # randomly chosen position above will be the starting point for the fire
-    maze[row][col]=-1
+    if row==len(maze)-1 and col==len(maze)-1:
+       # then i just pick the position above it
+       row=row-1
+       maze[row][col]=-1
+    elif row==0 and col==0:
+        # then I pick the position to the right
+        col=col+1
+        maze[row][col]=-1
+    else:
+        maze[row][col]=-1
     return (row,col)
 
 

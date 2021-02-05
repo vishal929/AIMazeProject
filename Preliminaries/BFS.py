@@ -47,7 +47,7 @@ def bfsGetPath(maze,loc1,loc2):
     fringe.put(loc1)
     # closed set implemented as python collection set
     closed = set()
-    while fringe:
+    while not fringe.empty():
         item = fringe.get()
         # checking if item is loc2
         if item == loc2:
@@ -64,7 +64,7 @@ def bfsGetPath(maze,loc1,loc2):
         for neighbor in neighbors:
             if neighbor not in closed:
                 if neighbor[0] < dim and neighbor[0] >= 0 and neighbor[1] < dim and neighbor[1] >= 0:
-                    if maze[neighbor[0]][neighbor[1]] != 1:
+                    if maze[neighbor[0]][neighbor[1]] != 1 and maze[neighbor[0]][neighbor[1]]!=-1:
                         fringe.put(neighbor)
                         # updating parent
                         parents[neighbor]=item
