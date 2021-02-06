@@ -7,6 +7,7 @@
         # if so:
             # 4) enter the flammability rate
             # 5) choose a strategy
+            # 6) Ask if they only want final result or gradual showing of fire spread?
         # if not:
             # do you want dfs to see if a path is possible?
                 # enter first and second tuple for coordinates

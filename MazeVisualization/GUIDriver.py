@@ -1,6 +1,7 @@
 #import for testing
 import Strategy1
 import Strategy2
+from Preliminaries.AStar import aStar
 from Preliminaries.mazeGenerator import generateMaze
 from Preliminaries   import BFS
 from Preliminaries import DFS
@@ -136,7 +137,10 @@ class ResizingCanvas(tkinter.Canvas):
 
 # test for now
 
-hi = CanvasMaze(10,0.2,0)
-hi.showAStar()
+hi = CanvasMaze(300,0.3,0)
+hi.showDFS()
 hi.mainloop()
+
+
+
 

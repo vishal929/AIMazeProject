@@ -36,9 +36,9 @@ def aStar(maze, loc1, loc2):
         neighbors.append((item[1][0], item[1][1] + 1))  #cell down
 
         for neighbor in neighbors:
-            if neighbor not in closed:
-                if neighbor[0] < dim and neighbor[0] >= 0 and neighbor[1] < dim and neighbor[1] >= 0:
-                    if maze[neighbor[0]][neighbor[1]] != 1:
+            if neighbor[0] < dim and neighbor[0] >= 0 and neighbor[1] < dim and neighbor[1] >= 0:
+                if maze[neighbor[0]][neighbor[1]] != 1:
+                    if neighbor not in closed:
                         distances[neighbor] = distances[item[1]] + 1
                         fringe.put((getHeuristic(neighbor, loc2)+distances[neighbor], neighbor))
         closed.add(item[1])
@@ -74,9 +74,9 @@ def aStarGetPath(maze,loc1,loc2):
         neighbors.append((item[1][0], item[1][1] + 1))  #cell down
 
         for neighbor in neighbors:
-            if neighbor not in closed:
-                if neighbor[0] < dim and neighbor[0] >= 0 and neighbor[1] < dim and neighbor[1] >= 0:
-                    if maze[neighbor[0]][neighbor[1]] != 1:
+            if neighbor[0] < dim and neighbor[0] >= 0 and neighbor[1] < dim and neighbor[1] >= 0:
+                if maze[neighbor[0]][neighbor[1]] != 1:
+                    if neighbor not in closed:
                         distances[neighbor]=distances[item[1]]+1
                         fringe.put((getHeuristic(neighbor, loc2)+distances[neighbor], neighbor))
                         # updating parent
