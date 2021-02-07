@@ -56,7 +56,7 @@ def guiAStar(maze):
 # second part of tuple that is returned is agents current position
 def guiStrategyOne(maze,flammabilityRate,path):
    if path==None:
-       path=BFS.bfsGetPath(maze,(0,0),(len(maze)-1,len(maze)-1))
+       path=AStar.aStarGetPath(maze,(0,0),(len(maze)-1,len(maze)-1))
        # moving agent to start
        path.popleft()
        maze[0][0]=2
@@ -92,7 +92,7 @@ def guiStrategyTwo(maze,flammabilityRate,currLoc):
         # returning bool,currLoc
         return (True,(0,0))
     # if currLoc is not none, we recalculate and pick second step because first step is current pos
-    path =BFS.bfsGetPath(maze,currLoc,(len(maze)-1,len(maze)-1))
+    path =AStar.aStarGetPath(maze,currLoc,(len(maze)-1,len(maze)-1))
 
     path.popleft()
     if not path:

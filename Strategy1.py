@@ -1,15 +1,15 @@
 # code implementation of strategy 1
 # will need bfs for this
-from Preliminaries import BFS
+from Preliminaries import BFS, AStar
 from Preliminaries import mazeGenerator
-# very simple algo: just use bfs to get a path and then move agent along the path while incrementing fire
+# very simple algo: just use A* to get a path and then move agent along the path while incrementing fire
 # fire generation included in algo
 
 # returns position died in
 def doStrategyOne(maze,flammabilityRate):
     mazeGenerator.initializeFire(maze)
     # path given by bfs
-    bfsPath = BFS.bfsGetPath(maze,(0,0),(len(maze)-1,len(maze)-1))
+    bfsPath = AStar.aStarGetPath(maze,(0,0),(len(maze)-1,len(maze)-1))
 
     for step in bfsPath:
         # first step logic

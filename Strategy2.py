@@ -1,6 +1,6 @@
 # code implementation of strategy 2
 # recalculating bfs at each step
-from Preliminaries import mazeGenerator
+from Preliminaries import mazeGenerator, AStar
 from Preliminaries import BFS
 
 def doStrategyTwo(maze,flammabilityRate):
@@ -11,7 +11,7 @@ def doStrategyTwo(maze,flammabilityRate):
 
    while True:
       #first spot is the start, so we pick the next one
-      posToPick=BFS.bfsGetPath(maze,currPosition,(len(maze)-1,len(maze)-1))[1]
+      posToPick=AStar.aStarGetPath(maze,currPosition,(len(maze)-1,len(maze)-1))[1]
 
       #checking goal status
       if posToPick==(len(maze)-1,len(maze)-1):

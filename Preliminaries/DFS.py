@@ -1,12 +1,14 @@
 # stack needed for dfs
 from collections import deque
 # maze generation needed for probability helper
-from Preliminaries.mazeGenerator import generateMaze
 
 
 # fringe is a stack for dfs
 # returns true if loc2 is reachable from loc1, false otherwise
 # loc1 and loc2 are tuples of form (row,column)
+from Preliminaries import mazeGenerator
+
+
 def dfs(maze, loc1, loc2):
     dim = len(maze)
     if loc1 == loc2:
@@ -103,7 +105,7 @@ def dfsProbabilityHelper(dim,sampleSize):
         dfsSuccessCount = 0
         for i in range(sampleSize):
             # generating maze
-            maze = generateMaze(dim, currDensity)
+            maze = mazeGenerator.generateMaze(dim, currDensity)
             # checking dfs
             if dfs(maze, (0, 0), (dim - 1, dim - 1)):
                 dfsSuccessCount += 1

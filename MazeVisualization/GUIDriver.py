@@ -84,6 +84,7 @@ class CanvasMaze(tkinter.Tk):
    # driver for above method
    def showGradualStrategyOne(self):
       self.showStrategyOneStep(None)
+      self.mainloop()
 
 
    # below method does not show gradually
@@ -103,6 +104,7 @@ class CanvasMaze(tkinter.Tk):
    # driver for above method
    def showGradualStrategyTwo(self):
       self.showStrategyTwoStep(None)
+      self.mainloop()
 
    # method that does not show gradually below
    def showEntireStrategyTwo(self):
@@ -137,9 +139,9 @@ class ResizingCanvas(tkinter.Canvas):
 
 # test for now
 
-hi = CanvasMaze(300,0.3,0)
-hi.showDFS()
-hi.mainloop()
+# hi = CanvasMaze(10,0.1,0.1)
+# hi.showGradualStrategyTwo()
+# hi.mainloop()
 
 
 
