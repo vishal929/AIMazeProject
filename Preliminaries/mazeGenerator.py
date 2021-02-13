@@ -64,21 +64,21 @@ def initializeFire(maze):
 
 # method below for performing fire generation given flammability rate
 def lightMaze(maze,flammabilityRate):
-   newFireSpots=[]
-   dim = len(maze)
-   if flammabilityRate<0 or flammabilityRate>1:
-       raise ValueError("Flammability rate must be between 0 and 1 (inclusive)!")
+    newFireSpots=[]
+    dim = len(maze)
+    if flammabilityRate<0 or flammabilityRate>1:
+        raise ValueError("Flammability rate must be between 0 and 1 (inclusive)!")
    # iterating and adjusting fire
-   for i in range(dim):
-       for j in range(dim):
-          if maze[i][j]!=1 and maze[i][j]!=-1:
-            # then I need to check neighbors
-            neighbors = []
-            numFire=0
-            neighbors.append((i+1, j))
-            neighbors.append((i-1, j))
-            neighbors.append((i, j+1))
-            neighbors.append((i, j-1))
+    for i in range(dim):
+        for j in range(dim):
+            if maze[i][j]!=1 and maze[i][j]!=-1:
+                # then I need to check neighbors
+                neighbors = []
+                numFire=0
+                neighbors.append((i+1, j))
+                neighbors.append((i-1, j))
+                neighbors.append((i, j+1))
+                neighbors.append((i, j-1))
             for neighbor in neighbors:
                 if neighbor[0]<dim and neighbor[0]>=0 and neighbor[1]<dim and neighbor[1]>=0:
                     # then this is valid neighbor to check
@@ -87,9 +87,11 @@ def lightMaze(maze,flammabilityRate):
             probFire = 1-((1-flammabilityRate)**numFire)
             if random()<probFire:
                 # then now this cell is on fire
-                maze[i][j] = -1
                 newFireSpots.append((i,j))
-   return newFireSpots
+    # after counting all the new fire spots, we set them
+    for toLight in newFireSpots:
+       maze[toLight[0]][toLight[1]]=-1
+    return newFireSpots
 
 # prints the maze to stdout
 # O=open/free, F=fire, B=blocked, A=agent
@@ -97,26 +99,26 @@ def printMaze(maze):
     dim = len(maze)
     for i in range(dim):
         for j in range(dim):
-            print("---")
+            print("---",end="")
         print("\n")
         for j in range(dim):
-            print("|")
+            print("|",end="")
             if maze[i][j]==0:
                 # o for open
-                print("O")
+                print("O",end="")
             elif maze[i][j]==-1:
                 # f for fire
-                print("F")
+                print("F",end="")
             elif maze[i][j]==2:
                 #A for agent
-                print("A")
+                print("A",end="")
             else:
                 # b for blocked
-                print("B")
-            print("|")
+                print("B",end="")
+            print("|",end="")
         print("\n")
     for i in range(dim):
-        print("---")
+        print("---",end="")
     print("\n")
 
 # showing dfs on a maze

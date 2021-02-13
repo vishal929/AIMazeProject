@@ -137,11 +137,7 @@ class ResizingCanvas(tkinter.Canvas):
       self.scale("all", 0, 0, wscale, hscale)
 
 
-# test for now
 
-# hi = CanvasMaze(10,0.1,0.1)
-# hi.showGradualStrategyTwo()
-# hi.mainloop()
 
 
 

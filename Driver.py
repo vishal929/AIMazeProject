@@ -1,5 +1,7 @@
 from MazeVisualization import GUIDriver
-from Preliminaries import mazeGenerator
+from Preliminaries import mazeGenerator, DFS, BFS, AStar
+
+
 # driver will take care of our user interface
 # a bunch of questions will be asked:
     # 0) do you want GUI display or not?
@@ -124,6 +126,10 @@ def askGradual():
     user = input("Would you like to see gradual results, or only the final result of the strategy? (Y/N)").lower()
     return user
 
+# ask if user just wants to see true/false if a path has been found or not
+def askIsPath():
+    user = input("Would to just return true/false if a path has been found with this method, or print the maze? (y/n)").lower()
+    return user
 
 # below code to drive our user interface
 guiYesNo=askForGUI()
@@ -186,11 +192,30 @@ else:
         # CLI output
         if noFireStrategy==1:
             maze=mazeGenerator.generateMaze(dim,blockingFactor)
-            mazeGenerator.printedDFS(maze)
+            if askIsPath()=="y":
+                # then user just wants to see if there is a path (true/false)
+                if DFS.dfs(maze,(0,0),(len(maze)-1,len(maze)-1)):
+                    print("PATH FOUND!")
+                else:
+                    print("NO PATH FOUND!")
+            else:
+                mazeGenerator.printedDFS(maze)
         elif noFireStrategy==2:
             maze = mazeGenerator.generateMaze(dim, blockingFactor)
-            mazeGenerator.printedBFS(maze)
+            if askIsPath()=="y":
+                if BFS.bfs(maze,(0,0),(len(maze)-1,len(maze)-1)):
+                    print("PATH FOUND!")
+                else:
+                    print("NO PATH FOUND!")
+            else:
+                mazeGenerator.printedBFS(maze)
         else:
             maze = mazeGenerator.generateMaze(dim, blockingFactor)
-            mazeGenerator.printedAStar(maze)
+            if askIsPath()=="y":
+                if AStar.aStar(maze,(0,0),(len(maze)-1,len(maze)-1)):
+                    print("PATH FOUND!")
+                else:
+                    print("NO PATH FOUND!")
+            else:
+                mazeGenerator.printedAStar(maze)
 

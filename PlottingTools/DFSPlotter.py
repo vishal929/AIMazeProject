@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
     # these results will make the graph easy to plot and we will have a solid number of points of data
 
 #for now this is just a test with maze dim of 5x5 and sample size of 1000
-result = dfsProbabilityHelper(5,1000)
+result = dfsProbabilityHelper(100,1000)
 # now performing matplotlib logic to generate the graph
 
 #including data points

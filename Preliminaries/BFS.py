@@ -15,8 +15,10 @@ def bfs(maze, loc1, loc2):
     fringe.put(loc1)
     # closed set implemented as python collection set
     closed = set()
-    while fringe:
+    while not fringe.empty():
         item = fringe.get()
+        if item in closed:
+            continue
         # checking if item is loc2
         if item == loc2:
             return True
@@ -31,7 +33,6 @@ def bfs(maze, loc1, loc2):
         for neighbor in neighbors:
             if neighbor[0] < dim and neighbor[0] >= 0 and neighbor[1] < dim and neighbor[1] >= 0:
                 if maze[neighbor[0]][neighbor[1]] != 1:
-                    if neighbor not in closed:
                         fringe.put(neighbor)
         closed.add(item)
     return False
@@ -49,6 +50,9 @@ def bfsGetPath(maze,loc1,loc2):
     closed = set()
     while not fringe.empty():
         item = fringe.get()
+        if item in closed:
+            continue
+
         # checking if item is loc2
         if item == loc2:
             break
@@ -64,10 +68,11 @@ def bfsGetPath(maze,loc1,loc2):
         for neighbor in neighbors:
             if neighbor[0] < dim and neighbor[0] >= 0 and neighbor[1] < dim and neighbor[1] >= 0:
                 if maze[neighbor[0]][neighbor[1]] != 1 and maze[neighbor[0]][neighbor[1]]!=-1:
-                    if neighbor not in closed:
-                        fringe.put(neighbor)
-                        # updating parent
-                        parents[neighbor]=item
+                        if neighbor not in parents:
+                            # then this neighbor wasnt even visited yet
+                            fringe.put(neighbor)
+                            # updating parent
+                            parents[neighbor]=item
         closed.add(item)
     # logic for returning a path
     # going through traceback from (item)
@@ -79,3 +84,4 @@ def bfsGetPath(maze,loc1,loc2):
     # last item is starting point
     path.appendleft(traced)
     return path
+

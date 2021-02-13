@@ -1,6 +1,11 @@
 from queue import PriorityQueue
-from Preliminaries import mazeGenerator
+from Preliminaries import mazeGenerator, AStar
 from collections import deque
+# importing copy for an alternate strategy
+import copy
+
+from Preliminaries.AStar import getEuclideanDistance
+
 
 def ourStrategy(maze,flammabilityRate):
     # agents starts at (0,0)
@@ -77,3 +82,128 @@ def getHeuristic(loc1,loc2,loc3,maze):
             if maze[neighbor[0]][neighbor[1]]==1:
                blockingFactorSum+=1
     return euclidean+distFire+blockingFactorSum
+
+# alternate strategy for beating the fire (taking into account probability of a cell getting on fire)
+# idea, i use A star heuristic on neighbors and I also take into account the probability of each cell getting on fire
+def ourAlternateStrategy(maze,flammabilityRate):
+    dim = len(maze)
+    # fringe is a priority queue
+    fringe = PriorityQueue()
+    fringe.put((0,(0,0)))
+    currAgentLoc=None
+    while not fringe.empty():
+        item = (fringe.get())[1]
+        # moving agent
+        maze[item[0]][item[1]]=2
+        currAgentLoc=item
+        # advancing fire
+        if item==(0,0):
+            # initializing fire
+            mazeGenerator.initializeFire(maze)
+        else:
+            # spreading fire
+            litSpots = mazeGenerator.lightMaze(maze,flammabilityRate)
+            if item in litSpots:
+                # then agent has burned up
+                return False
+        # getting neighbors
+        neighbors = [(item[0] + 1, item[1]), (item[0] - 1, item[1]), (item[0], item[1] + 1), (item[0], item[1] - 1)]
+        for neighbor in neighbors:
+            if neighbor[0] < len(maze) and neighbor[0] >= 0 and neighbor[1] < len(maze) and neighbor[1] >= 0:
+                if maze[neighbor[0]][neighbor[1]]!=-1 and maze[neighbor[0]][neighbor[1]]!=1:
+                    # adding to priority queue
+                    fringe.put((getAlternateHeuristic(maze,flammabilityRate,neighbor),neighbor))
+    # checking if we reached the end
+    if currAgentLoc==(len(maze)-1,len(maze)-1):
+        return True
+    else:
+        return False
+
+
+# idea, A star heuristic, but I also add the probability of this space getting on fire
+# future idea: could implement a tolerance for probability
+def getAlternateHeuristic(maze, flammabilityRate, locToTest):
+    neighborsOnFire=0
+    neighbors = [(locToTest[0] + 1, locToTest[1]), (locToTest[0] - 1, locToTest[1]), (locToTest[0], locToTest[1] + 1), (locToTest[0], locToTest[1] - 1)]
+    for neighbor in neighbors:
+        if neighbor[0]<len(maze) and neighbor[0]>=0 and neighbor[1]<len(maze) and neighbor[1]>=0:
+            if maze[neighbor[0]][neighbor[1]]==-1:
+                neighborsOnFire +=1
+    probOfFire = 1-((1-flammabilityRate)**neighborsOnFire)
+    euclideanDistance = getEuclideanDistance(locToTest,(len(maze)-1,len(maze)-1))
+    return probOfFire+euclideanDistance
+
+# idea: first generate a path with AStar
+# then, count the number of steps in the path
+# simulate the fire spread several times
+# count the probability of any square catching on fire in the path
+# if the probability passes a certain tolerance, we remove the square from the path and calculate again
+    # keep track of the path with the lowest probabilities of catching on fire
+# if no path can be found where probability of any square in the path catching on fire is under the tolerance level
+    # then we traverse the path we stored above with lowest probabilities and wish for the best
+def evenMoreAlternateStrategy(maze,flammabilityRate):
+    pathSatisfiesTolerance=True
+    bestPathSoFar=None
+    # stats below is organized as: (# of squares that have nonzero probability to ignite, totalSumOfProbability)
+    bestPathSoFarStats=None
+    # closed set for removing nodes that exceed our level of tolerance
+    closedSet = set()
+    # for each node in the closed set, we just simulate it as an obstacle so AStar avoids it
+    # at the end, we just revert these spaces back to free spaces
+    # we set initial tolerance to 0.2
+    initialTolerance=0.2
+    mazeGenerator.initializeFire(maze)
+    while not pathSatisfiesTolerance:
+        # setting to true, will be set to false later if the generated path doesnt satisfy the constraints
+        pathSatisfiesTolerance=True
+        # adjusting based on closed set
+        for loc in closedSet:
+            # simulating blocking to tell AStar not to generate path through here
+            maze[loc[0]][loc[1]]=1
+        path = AStar.aStarGetPath(maze,(0,0),(len(maze)-1,len(maze)-1))
+        # NEED TO CHECK IF A VALID PATH IS RETURNED OR NOT
+        if len(path)==1:
+            # then only the goal is in the backtrack
+            break
+        # initializing to all zeroes (will increment this and then divide by 100 for final probabilities)
+        pathProbs = [0.0 for i in range(len(path))]
+        numSteps = len(path)
+        # generating fire for this number of steps 100 times for getting probability
+        for j in range(100):
+            copyMaze = copy.deepcopy(maze)
+            totalLitSpots =[]
+            for i in range(numSteps):
+                # spreading fire
+                litSpots = mazeGenerator.lightMaze(copyMaze,flammabilityRate)
+                for i in range(len(path)):
+                    if path[i] in litSpots:
+                        pathProbs[i] +=1
+        # now we have all the sums --> converting to probabilities
+        # if we find any probability that is greater than or equal to our tolerance, we can add it to a closed set and recalculate
+        # number of nonzero probability spots
+        numNonZeroProbability=0
+        probabilitySum=0
+        for i in range(len(path)):
+            if pathProbs[i]!=0:
+                numNonZeroProbability+=1
+                pathProbs[i]=pathProbs[i]/100.0
+                probabilitySum+=pathProbs[i]
+                if pathProbs[i]>=initialTolerance:
+                    # then we add this to our closed set
+                    closedSet.add(path[i])
+                    pathSatisfiesTolerance=False
+        # setting best path so far (best means least sum of probability of going on fire and least number of squares which have a chance to ignite)
+        consideredTuple=(numNonZeroProbability,probabilitySum)
+        if bestPathSoFar==None:
+            bestPathSoFar=path
+            bestPathSoFarStats=consideredTuple
+        else:
+            if consideredTuple[0]<bestPathSoFarStats[0] and consideredTuple[1]<bestPathSoFarStats[1]:
+                # then this is the new best path to try
+                bestPathSoFar=path
+                bestPathSoFarStats=consideredTuple
+    # now we have a path or not path, but regardless we should reset all the closed set "artificial values"
+    for loc in closedSet:
+        maze[loc[0]][loc[1]]=0
+    # returning best path found, or None if no possible path
+    return bestPathSoFar
