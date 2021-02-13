@@ -82,10 +82,15 @@ def aStarGetPath(maze, loc1, loc2):
         for neighbor in neighbors:
             if neighbor[0] < dim and neighbor[0] >= 0 and neighbor[1] < dim and neighbor[1] >= 0:
                 if maze[neighbor[0]][neighbor[1]] != 1 and maze[neighbor[0]][neighbor[1]]!=-1:
-                        lastDistance[neighbor]=tup[1][1]+1
-                        # updating distance of nodes
-                        heapq.heappush(fringe,(getHeuristic(neighbor, loc2)+((tup[1])[1])+1, (neighbor,tup[1][1]+1)))
-                        # updating parent
+                    if neighbor in lastDistance:
+                        if lastDistance[neighbor]<tup[1][1]+1:
+                            # we found some better path
+                            continue
+                    lastDistance[neighbor]=tup[1][1]+1
+                    # updating distance of nodes
+                    heapq.heappush(fringe,(getHeuristic(neighbor, loc2)+((tup[1])[1])+1, (neighbor,tup[1][1]+1)))
+                    # updating parent
+                    if neighbor!=(0,0):
                         parents[neighbor] = item
         closed.add(item)
     # logic for returning a path

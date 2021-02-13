@@ -141,8 +141,8 @@ def getAlternateHeuristic(maze, flammabilityRate, locToTest):
     # keep track of the path with the lowest probabilities of catching on fire
 # if no path can be found where probability of any square in the path catching on fire is under the tolerance level
     # then we traverse the path we stored above with lowest probabilities and wish for the best
-def evenMoreAlternateStrategy(maze,flammabilityRate):
-    pathSatisfiesTolerance=True
+def evenMoreAlternateStrategy(maze,flammabilityRate,tolerance,numTrials):
+    pathSatisfiesTolerance=False
     bestPathSoFar=None
     # stats below is organized as: (# of squares that have nonzero probability to ignite, totalSumOfProbability)
     bestPathSoFarStats=None
@@ -150,12 +150,9 @@ def evenMoreAlternateStrategy(maze,flammabilityRate):
     closedSet = set()
     # for each node in the closed set, we just simulate it as an obstacle so AStar avoids it
     # at the end, we just revert these spaces back to free spaces
-    # we set initial tolerance to 0.2
-    initialTolerance=0.2
     mazeGenerator.initializeFire(maze)
     while not pathSatisfiesTolerance:
         # setting to true, will be set to false later if the generated path doesnt satisfy the constraints
-        pathSatisfiesTolerance=True
         # adjusting based on closed set
         for loc in closedSet:
             # simulating blocking to tell AStar not to generate path through here
@@ -167,31 +164,41 @@ def evenMoreAlternateStrategy(maze,flammabilityRate):
             break
         # initializing to all zeroes (will increment this and then divide by 100 for final probabilities)
         pathProbs = [0.0 for i in range(len(path))]
-        numSteps = len(path)
+        # we do not count the start
+        numSteps = len(path)-1
         # generating fire for this number of steps 100 times for getting probability
-        for j in range(100):
+        for j in range(numTrials):
             copyMaze = copy.deepcopy(maze)
-            totalLitSpots =[]
             for i in range(numSteps):
                 # spreading fire
                 litSpots = mazeGenerator.lightMaze(copyMaze,flammabilityRate)
                 for i in range(len(path)):
-                    if path[i] in litSpots:
+                    if i!=0 and path[i] in litSpots:
+                        # we shouldnt count the start
                         pathProbs[i] +=1
         # now we have all the sums --> converting to probabilities
         # if we find any probability that is greater than or equal to our tolerance, we can add it to a closed set and recalculate
         # number of nonzero probability spots
         numNonZeroProbability=0
         probabilitySum=0
+        numViolated=0
         for i in range(len(path)):
+            if i==0:
+                continue
             if pathProbs[i]!=0:
                 numNonZeroProbability+=1
-                pathProbs[i]=pathProbs[i]/100.0
+                pathProbs[i]=pathProbs[i]/numTrials
                 probabilitySum+=pathProbs[i]
-                if pathProbs[i]>=initialTolerance:
-                    # then we add this to our closed set
+                if pathProbs[i]>=tolerance:
+                    # then we add this to our closed set for artificially setting the values to 1
                     closedSet.add(path[i])
-                    pathSatisfiesTolerance=False
+                    numViolated+=1
+        if numViolated>0:
+            pathSatisfiesTolerance=False
+        else:
+            # then this path satisfies our requirements
+            bestPathSoFar=path
+            break
         # setting best path so far (best means least sum of probability of going on fire and least number of squares which have a chance to ignite)
         consideredTuple=(numNonZeroProbability,probabilitySum)
         if bestPathSoFar==None:
@@ -207,3 +214,4 @@ def evenMoreAlternateStrategy(maze,flammabilityRate):
         maze[loc[0]][loc[1]]=0
     # returning best path found, or None if no possible path
     return bestPathSoFar
+

@@ -68,10 +68,11 @@ def bfsGetPath(maze,loc1,loc2):
         for neighbor in neighbors:
             if neighbor[0] < dim and neighbor[0] >= 0 and neighbor[1] < dim and neighbor[1] >= 0:
                 if maze[neighbor[0]][neighbor[1]] != 1 and maze[neighbor[0]][neighbor[1]]!=-1:
-                        if neighbor not in parents:
-                            # then this neighbor wasnt even visited yet
-                            fringe.put(neighbor)
-                            # updating parent
+                    if neighbor not in parents:
+                        fringe.put(neighbor)
+                        # then this neighbor wasnt even visited yet
+                        # updating parent
+                        if neighbor!=(0,0):
                             parents[neighbor]=item
         closed.add(item)
     # logic for returning a path
@@ -82,6 +83,7 @@ def bfsGetPath(maze,loc1,loc2):
        path.appendleft(traced)
        traced=parents[traced]
     # last item is starting point
+    print("REACHED HERE")
     path.appendleft(traced)
     return path
 

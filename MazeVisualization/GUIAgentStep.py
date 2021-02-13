@@ -97,7 +97,7 @@ def guiStrategyTwo(maze,flammabilityRate,currLoc):
     path.popleft()
     if not path:
         # then we have an empty deque
-        return False, currLoc
+        return (False, currLoc)
     locToMove = path.popleft()
     if maze[locToMove[0]][locToMove[1]]==-1:
         return (False,locToMove)
@@ -113,3 +113,31 @@ def guiStrategyTwo(maze,flammabilityRate,currLoc):
             return (False,locToMove)
         else:
             return (True,locToMove)
+
+
+def guiStrategyAlternateStrategy(maze,flammabilityRate,path):
+    # number of trials is 50 for probability with fire generation
+    # accepted tolerance is 0.2
+    if path == None:
+        # this method below already initializes the fire
+        path = OurStrategy.evenMoreAlternateStrategy(maze, flammabilityRate, 0.2, 50)
+        # moving agent to start
+        path.popleft()
+        maze[0][0] = 2
+        return (True, (0, 0), path)
+    if not path:
+        # then we hit the end
+        return False, (len(maze) - 1, len(maze) - 1), path
+    # checking where agent will move
+    locToMove = path.popleft()
+    if maze[locToMove[0]][locToMove[1]] == -1:
+        # then the agent moved into fire
+        return (False, (locToMove), path)
+    else:
+        # then we move agent and generate fire
+        maze[locToMove[0]][locToMove[1]] = 2
+        fireSpots = mazeGenerator.lightMaze(maze, flammabilityRate)
+        if locToMove in fireSpots:
+            return (False, locToMove, path)
+        else:
+            return (True, locToMove, path)

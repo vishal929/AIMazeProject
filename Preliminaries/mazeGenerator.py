@@ -79,15 +79,15 @@ def lightMaze(maze,flammabilityRate):
                 neighbors.append((i-1, j))
                 neighbors.append((i, j+1))
                 neighbors.append((i, j-1))
-            for neighbor in neighbors:
-                if neighbor[0]<dim and neighbor[0]>=0 and neighbor[1]<dim and neighbor[1]>=0:
-                    # then this is valid neighbor to check
-                    if maze[neighbor[0]][neighbor[1]]==-1:
-                        numFire += 1
-            probFire = 1-((1-flammabilityRate)**numFire)
-            if random()<probFire:
-                # then now this cell is on fire
-                newFireSpots.append((i,j))
+                for neighbor in neighbors:
+                    if neighbor[0]<dim and neighbor[0]>=0 and neighbor[1]<dim and neighbor[1]>=0:
+                        # then this is valid neighbor to check
+                        if maze[neighbor[0]][neighbor[1]]==-1:
+                            numFire += 1
+                probFire = 1-((1-flammabilityRate)**numFire)
+                if random()<probFire:
+                    # then now this cell is on fire
+                    newFireSpots.append((i,j))
     # after counting all the new fire spots, we set them
     for toLight in newFireSpots:
        maze[toLight[0]][toLight[1]]=-1

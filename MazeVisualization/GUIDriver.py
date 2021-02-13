@@ -112,6 +112,17 @@ class CanvasMaze(tkinter.Tk):
       self.updateDrawing()
       self.mainloop()
 
+   def showAlternateStrategyStep(self,path):
+      toContinue = GUIAgentStep.guiStrategyAlternateStrategy(self.maze, self.flammabilityRate, path)
+      self.updateDrawing()
+      if toContinue[0]:
+         self.after(1000, self.showAlternateStrategyStep, toContinue[2])
+
+   # method that shows our steps gradually for alternateStrategy
+   def showGradualAlternateStrategy(self):
+      self.showAlternateStrategyStep(None)
+      self.mainloop()
+
 
 
 
@@ -139,6 +150,8 @@ class ResizingCanvas(tkinter.Canvas):
 
 
 
-
+# test
+hi = CanvasMaze(50,0.2,0.1)
+hi.showGradualAlternateStrategy()
 
 
