@@ -215,3 +215,7 @@ def evenMoreAlternateStrategy(maze,flammabilityRate,tolerance,numTrials):
     # returning best path found, or None if no possible path
     return bestPathSoFar
 
+# test
+hi = mazeGenerator.generateMaze(100,0.3)
+print(evenMoreAlternateStrategy(hi,0.1,0.2,50))
+

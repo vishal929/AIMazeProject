@@ -151,7 +151,7 @@ class ResizingCanvas(tkinter.Canvas):
 
 
 # test
-hi = CanvasMaze(50,0.2,0.1)
+hi = CanvasMaze(200,0.3,0.1)
 hi.showGradualAlternateStrategy()
 
 

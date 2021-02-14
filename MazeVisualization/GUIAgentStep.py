@@ -121,6 +121,8 @@ def guiStrategyAlternateStrategy(maze,flammabilityRate,path):
     if path == None:
         # this method below already initializes the fire
         path = OurStrategy.evenMoreAlternateStrategy(maze, flammabilityRate, 0.2, 50)
+        if (path==None):
+            return False,(0,0),None
         # moving agent to start
         path.popleft()
         maze[0][0] = 2
