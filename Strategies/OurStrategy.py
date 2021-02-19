@@ -1,4 +1,4 @@
-from Preliminaries import mazeGenerator, AStar
+from Preliminaries import mazeGenerator, AStar, DFS
 # importing copy for an alternate strategy
 import copy
 
@@ -19,7 +19,6 @@ def evenMoreAlternateStrategy(maze,flammabilityRate,tolerance,numTrials):
     closedSet = set()
     # for each node in the closed set, we just simulate it as an obstacle so AStar avoids it
     # at the end, we just revert these spaces back to free spaces
-    mazeGenerator.initializeFire(maze)
     while not pathSatisfiesTolerance:
         # setting to true, will be set to false later if the generated path doesnt satisfy the constraints
         # adjusting based on closed set
@@ -29,7 +28,7 @@ def evenMoreAlternateStrategy(maze,flammabilityRate,tolerance,numTrials):
         path = AStar.aStarGetPath(maze,(0,0),(len(maze)-1,len(maze)-1))
         # NEED TO CHECK IF A VALID PATH IS RETURNED OR NOT
         if len(path)==1:
-            # then only the goal is in the backtrack
+            # then only the goal is in the backtrack i.e no path found!
             break
         # initializing to all zeroes (will increment this and then divide by 100 for final probabilities)
         pathProbs = [0.0 for i in range(len(path))]
@@ -87,10 +86,10 @@ def evenMoreAlternateStrategy(maze,flammabilityRate,tolerance,numTrials):
 
 # execution of our strategy
 def doOurAlternateStrategy(maze,flammabilityRate,tolerance,numTrials):
+   mazeGenerator.initializeFire(maze)
    path = evenMoreAlternateStrategy(maze,flammabilityRate,tolerance,numTrials)
    if path is not None:
       # then we can do stuff
-      mazeGenerator.initializeFire(maze)
       # path given by bfs
       bfsPath = AStar.aStarGetPath(maze, (0, 0), (len(maze) - 1, len(maze) - 1))
 
@@ -125,8 +124,7 @@ def doOurAlternateStrategy(maze,flammabilityRate,tolerance,numTrials):
 
 
 
-def ourStrategyProbabilityHelper(dim,sampleSize):
-    pass
+def ourStrategyProbabilityHelper(dim,tolerance,numAlgoTrials,sampleSize):
     # idea just generate maze x times, do our strategy from flammability rate 0 to flammability rate 1
     # count number of successes and that is our probability
     # keep incrementing obstacle density by 0.05 and we will eventually have a pretty cool graph
@@ -148,9 +146,11 @@ def ourStrategyProbabilityHelper(dim,sampleSize):
             while True:
                 # generating maze
                 maze = mazeGenerator.generateMaze(dim, 0.3)
+                # initializing fire
+                fireLoc = mazeGenerator.initializeFire(maze)
                 # checking our strat for 50 fire generations
-                path = evenMoreAlternateStrategy(maze,currFlammability,0.2,50)
-                if path is None:
+                path = evenMoreAlternateStrategy(maze,currFlammability,tolerance,numAlgoTrials)
+                if (path is None) or not DFS.dfs((0,0),fireLoc):
                     # then this is a dud, need to generate maze with some valid path
                     continue
                 else:
