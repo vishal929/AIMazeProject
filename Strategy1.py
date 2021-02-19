@@ -7,7 +7,33 @@ from Preliminaries import mazeGenerator
 
 # returns position died in
 def doStrategyOne(maze,flammabilityRate):
-    # mazeGenerator.initializeFire(maze)
+    mazeGenerator.initializeFire(maze)
+    # path given by A*
+    aStarPath = AStar.aStarGetPath(maze,(0,0),(len(maze)-1,len(maze)-1))
+
+    for step in aStarPath:
+        # first step logic
+        if step[0]==0 and step[1]==0:
+            # then we just move the agent and continue
+            maze[step[0]][step[1]] = 2
+            continue
+        # we just move agent and then increment the fire
+        # because we used bfs, we cannot possibly hit an obstacle, but we might hit fire and die
+        if maze[step[0]][step[1]] == -1:
+            # return the failed pos
+            return step
+        else:
+            # then we move the agent and increment the fire
+            maze[step[0]][step[1]]=2
+            mazeGenerator.lightMaze(maze,flammabilityRate)
+            # checking if fire is on the step we just moved to
+            if maze[step[0]][step[1]] == -1:
+                return step
+    # if we reached the end we can just return the last point
+    return (len(maze)-1,len(maze)-1)
+
+# Same as doStrategyOne but if given a maze already on fire (for use in probability helper)
+def doStrategyOneForHelper(maze,flammabilityRate):
     # path given by A*
     aStarPath = AStar.aStarGetPath(maze,(0,0),(len(maze)-1,len(maze)-1))
 
@@ -33,7 +59,6 @@ def doStrategyOne(maze,flammabilityRate):
     return (len(maze)-1,len(maze)-1)
 
 
-
 # returns a list of tuples corresponding to each obstacle density incremented by 0.05
 # sample size is the number of times to run the test for each blocking density
 # dim is the dimension of the maze to use for probability helper
@@ -55,7 +80,7 @@ def strategyOneProbabilityHelper(dim,sampleSize):
                 maze = mazeGenerator.generateMaze(dim, desiredDensity)
                 fireLoc = mazeGenerator.initializeFire(maze)
             print("fire: ", fireLoc)
-            endingLoc = doStrategyOne(maze, currFlammability)
+            endingLoc = doStrategyOneForHelper(maze, currFlammability)
             print("Loc: ", endingLoc)
             if endingLoc == goal:
                 strategyOneSuccessCount += 1
