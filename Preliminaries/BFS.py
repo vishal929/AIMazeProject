@@ -86,7 +86,6 @@ def bfsGetPath(maze,loc1,loc2):
        path.appendleft(traced)
        traced=parents[traced]
     # last item is starting point
-    print("REACHED HERE")
     path.appendleft(traced)
     return path
 
