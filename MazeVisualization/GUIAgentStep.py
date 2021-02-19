@@ -118,11 +118,11 @@ def guiStrategyTwo(maze,flammabilityRate,currLoc):
 
 def guiStrategyAlternateStrategy(maze,flammabilityRate,path):
     # number of trials is 50 for probability with fire generation
-    # accepted tolerance is 0.2
+    # accepted tolerance is 0.1
     if path is None:
         # initializing fire
         mazeGenerator.initializeFire(maze)
-        path = OurStrategy.evenMoreAlternateStrategy(maze, flammabilityRate, 0.2, 50)
+        path = OurStrategy.evenMoreAlternateStrategy(maze, flammabilityRate, 0.1, 50)
         if path is None:
             return False,(0,0),None
         # moving agent to start

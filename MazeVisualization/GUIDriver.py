@@ -1,4 +1,3 @@
-#import for testing
 from Strategies import Strategy1, Strategy2, OurStrategy
 from Preliminaries.mazeGenerator import generateMaze
 from MazeVisualization import GUIAgentStep
@@ -6,8 +5,6 @@ from MazeVisualization import GUIAgentStep
 import tkinter
 # idea: first show matrix with obstacles/initial fire
 # then, as moves are taken, fire grows and GUI is updated automatically
-# if goal found, success text displayed, otherwise failure text
-
 # widget to represent our maze, complete with dim label, obstacleDensity label, and fireRate label
 
 class CanvasMaze(tkinter.Tk):
@@ -122,7 +119,7 @@ class CanvasMaze(tkinter.Tk):
    # method that shows only the final result of our strategy
    def showEntireOurStrategy(self):
       # tolerance of 0.2 and trials of 50
-      OurStrategy.doOurAlternateStrategy(self.maze,self.flammabilityRate,0.2,50)
+      OurStrategy.doOurAlternateStrategy(self.maze,self.flammabilityRate,0.1,50)
       self.updateDrawing()
       self.mainloop()
 

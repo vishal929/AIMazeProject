@@ -14,7 +14,7 @@ from Strategies import Strategy1, Strategy2, OurStrategy
             # 5) choose a strategy
             # 6) Ask if they only want final result or gradual showing of fire spread?
         # if not:
-            # do you want bfs or A star or dfs to find a path?
+            # do you want bfs or A star or dfs to find a path (and also true/false, or show path?)?
 
 
 

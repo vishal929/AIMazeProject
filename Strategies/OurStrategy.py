@@ -2,6 +2,13 @@ from Preliminaries import mazeGenerator, AStar, DFS
 # importing copy for an alternate strategy
 import copy
 
+
+# OUR STRATEGY IS CALLED P.A.T.H.S
+    #Predicted
+    #Algorithmic
+    #Threshold
+    #Heuristic
+    #Simulation
 # idea: first generate a path with AStar
 # then, count the number of steps in the path
 # simulate the fire spread several times
@@ -118,12 +125,6 @@ def doOurAlternateStrategy(maze,flammabilityRate,tolerance,numTrials):
       return (len(maze) - 1, len(maze) - 1)
 
 
-
-
-
-
-
-
 def ourStrategyProbabilityHelper(dim,tolerance,numAlgoTrials,sampleSize):
     # idea just generate maze x times, do our strategy from flammability rate 0 to flammability rate 1
     # count number of successes and that is our probability
@@ -195,7 +196,7 @@ def printOurStrategyStep(maze, flammabilityRate, path):
     if path is None:
         # initializing fire
         mazeGenerator.initializeFire(maze)
-        path =evenMoreAlternateStrategy(maze,flammabilityRate,0.2,50)
+        path =evenMoreAlternateStrategy(maze,flammabilityRate,0.1,50)
         if path is None:
             # then no actual path was found
             return False,path

@@ -1,5 +1,4 @@
 # stack needed for dfs
-import time
 from collections import deque
 # maze generation needed for probability helper
 from Preliminaries import mazeGenerator
@@ -89,7 +88,7 @@ def dfsGetPath(maze,loc1,loc2):
 
 
 # returns a list of tuples corresponding to each obstacle density incremented by 0.05
-# so far the best size for not painfully slow computation is size 1000
+# so far the best size for not painfully slow maze allocation is size 1000
 # sample size is the number of times to run the test for each blocking density
 # dim is the dimension of the maze to use for probability helper
 def dfsProbabilityHelper(dim,sampleSize):

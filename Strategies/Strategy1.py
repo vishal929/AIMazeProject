@@ -1,5 +1,4 @@
 # code implementation of strategy 1
-# will need bfs for this
 from Preliminaries import AStar
 from Preliminaries import mazeGenerator
 # very simple algo: just use A* to get a path and then move agent along the path while incrementing fire
