@@ -90,10 +90,10 @@ def doOurAlternateStrategy(maze,flammabilityRate,tolerance,numTrials):
    path = evenMoreAlternateStrategy(maze,flammabilityRate,tolerance,numTrials)
    if path is not None:
       # then we can do stuff
-      # path given by bfs
-      bfsPath = AStar.aStarGetPath(maze, (0, 0), (len(maze) - 1, len(maze) - 1))
+      # path given by aStar
+      path = AStar.aStarGetPath(maze, (0, 0), (len(maze) - 1, len(maze) - 1))
 
-      for step in bfsPath:
+      for step in path:
           # first step logic
           if step[0] == 0 and step[1] == 0:
               # then we just move the agent and continue
@@ -150,8 +150,8 @@ def ourStrategyProbabilityHelper(dim,tolerance,numAlgoTrials,sampleSize):
                 fireLoc = mazeGenerator.initializeFire(maze)
                 # checking our strat for 50 fire generations
                 path = evenMoreAlternateStrategy(maze,currFlammability,tolerance,numAlgoTrials)
-                if (path is None) or not DFS.dfs((0,0),fireLoc):
-                    # then this is a dud, need to generate maze with some valid path
+                if (path is None) or not DFS.dfs(maze,(0,0),fireLoc):
+                    # then this is a dud, need to generate maze with some valid path to both agent and goal
                     continue
                 else:
                     break
@@ -193,41 +193,50 @@ def ourStrategyProbabilityHelper(dim,tolerance,numAlgoTrials,sampleSize):
 # gradual printing of strategy 1 on a maze on fire
 def printOurStrategyStep(maze, flammabilityRate, path):
     if path is None:
+        # initializing fire
+        mazeGenerator.initializeFire(maze)
         path =evenMoreAlternateStrategy(maze,flammabilityRate,0.2,50)
         if path is None:
             # then no actual path was found
-            return False
+            return False,path
         locToMove = path.popleft()
         maze[locToMove[0]][locToMove[1]]=2
-        return True
+        return True,path
     else:
         locToMove=path.popleft()
         if maze[locToMove[0]][locToMove[1]]==-1:
             # agent burns
-            return False
+            return False,path
         # moving agent
         maze[locToMove[0]][locToMove[1]]=2
         # generating fire
         litSpots=mazeGenerator.lightMaze(maze,flammabilityRate);
         if locToMove in litSpots:
             # agent burned up
-            return False
+            return False,path
         if locToMove ==(len(maze)-1,len(maze)-1):
-            return False
+            return False,path
         else:
-            return True
+            return True,path
 
 def printOurStrategy(maze,flammabilityRate):
     path = None
-    while printOurStrategyStep(maze,flammabilityRate,path):
+    while True:
+        result = printOurStrategyStep(maze,flammabilityRate,path)
+        path=result[1]
         mazeGenerator.printMaze(maze)
+        if not result[0]:
+            break
+    # final print
     mazeGenerator.printMaze(maze)
 
 
 def printOurEntireStrategy(maze,flammabilityRate):
     path = None
-    while printOurStrategyStep(maze, flammabilityRate, path):
-        # just doing steps
-        pass
+    while True:
+        result = printOurStrategyStep(maze,flammabilityRate,path)
+        path=result[1]
+        if not result[0]:
+            break
     # final print
     mazeGenerator.printMaze(maze)

@@ -8,14 +8,14 @@ import matplotlib.pyplot as plt
 
 
 
-result = OurStrategy.ourStrategyProbabilityHelper(100, 0,50,20)
+result = OurStrategy.ourStrategyProbabilityHelper(100,0.1,50,20)
 # now performing matplotlib logic to generate the graph
 
 #including data points
 
 plt.scatter(*zip(*result))
 plt.plot(*zip(*result))
-plt.title("probability of success via ourStrategy (0 tolerance) vs flammabilityRate (on maze of size 100)")
+plt.title("probability of success via ourStrategy (0.1 tolerance) vs flammabilityRate (on maze of size 100)")
 plt.xlabel("flammability rate")
 plt.ylabel("probability of success (from 20 trials at each 0.05 increment in flammability rate) ")
 plt.xticks([0,0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,0.95,1])

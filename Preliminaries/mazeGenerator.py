@@ -101,16 +101,16 @@ def printMaze(maze):
             print("|",end="")
             if maze[i][j]==0:
                 # o for open
-                print("O",end="")
+                print("0",end="")
             elif maze[i][j]==-1:
                 # f for fire
-                print("F",end="")
+                print("\u001b[31m"+"F"+"\033[0m",end="")
             elif maze[i][j]==2:
                 #A for agent
-                print("A",end="")
+                print("\u001b[34m"+ "A"+"\033[0m",end="")
             else:
                 # b for blocked
-                print("B",end="")
+                print("\u001b[32m"+"B"+"\033[0m",end="")
             print("|",end="")
         print("")
     for i in range(dim):

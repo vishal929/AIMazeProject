@@ -1,4 +1,5 @@
 # stack needed for dfs
+import time
 from collections import deque
 # maze generation needed for probability helper
 from Preliminaries import mazeGenerator

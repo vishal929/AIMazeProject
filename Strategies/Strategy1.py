@@ -1,6 +1,6 @@
 # code implementation of strategy 1
 # will need bfs for this
-from Preliminaries import BFS, AStar
+from Preliminaries import AStar
 from Preliminaries import mazeGenerator
 # very simple algo: just use A* to get a path and then move agent along the path while incrementing fire
 # fire generation included in algo
@@ -8,10 +8,10 @@ from Preliminaries import mazeGenerator
 # returns position died in
 def doStrategyOne(maze,flammabilityRate):
     mazeGenerator.initializeFire(maze)
-    # path given by bfs
-    bfsPath = AStar.aStarGetPath(maze,(0,0),(len(maze)-1,len(maze)-1))
+    # path given by A*
+    path = AStar.aStarGetPath(maze,(0,0),(len(maze)-1,len(maze)-1))
 
-    for step in bfsPath:
+    for step in path:
         # first step logic
         if step[0]==0 and step[1]==0:
             # then we just move the agent and continue
@@ -42,29 +42,33 @@ def printStrategyOneStep(maze, flammabilityRate, path):
         path =AStar.aStarGetPath(maze,(0,0),(len(maze)-1,len(maze)-1))
         locToMove = path.popleft()
         maze[locToMove[0]][locToMove[1]]=2
-        return True
+        return True,path
     else:
         locToMove=path.popleft()
         if maze[locToMove[0]][locToMove[1]]==-1:
             # agent burns
-            return False
+            return False,path
         # moving agent
         maze[locToMove[0]][locToMove[1]]=2
         # generating fire
         litSpots=mazeGenerator.lightMaze(maze,flammabilityRate);
         if locToMove in litSpots:
             # agent burned up
-            return False
+            return False,path
         if locToMove ==(len(maze)-1,len(maze)-1):
-            return False
+            return False,path
         else:
-            return True
+            return True,path
 
 
 def printStrategyOne(maze,flammabilityRate):
     path=None
-    while printStrategyOneStep(maze,flammabilityRate,path):
+    while True:
+        result = printStrategyOneStep(maze,flammabilityRate,path)
+        path=result[1]
         mazeGenerator.printMaze(maze)
+        if not result[0]:
+            break
     # printing final state
     mazeGenerator.printMaze(maze)
 

@@ -120,8 +120,9 @@ def guiStrategyAlternateStrategy(maze,flammabilityRate,path):
     # number of trials is 50 for probability with fire generation
     # accepted tolerance is 0.2
     if path is None:
-        # this method below already initializes the fire
-        path = OurStrategy.ourAlternateStrategy(maze, flammabilityRate, 0.2, 50)
+        # initializing fire
+        mazeGenerator.initializeFire(maze)
+        path = OurStrategy.evenMoreAlternateStrategy(maze, flammabilityRate, 0.2, 50)
         if path is None:
             return False,(0,0),None
         # moving agent to start
@@ -139,8 +140,11 @@ def guiStrategyAlternateStrategy(maze,flammabilityRate,path):
     else:
         # then we move agent and generate fire
         maze[locToMove[0]][locToMove[1]] = 2
+        if locToMove==(len(maze)-1,len(maze)-1):
+            # then we are done
+            return (False,locToMove,path)
         mazeGenerator.lightMaze(maze, flammabilityRate)
-        if maze[locToMove[0]][locToMove[1]]:
+        if maze[locToMove[0]][locToMove[1]]==-1:
             return (False, locToMove, path)
         else:
             return (True, locToMove, path)
