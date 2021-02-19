@@ -8,6 +8,9 @@ import math
 
 # Method to find path from loc1 to loc2 using A*
 # returns true if loc2 is reachable from loc1, false otherwise
+from Preliminaries import mazeGenerator
+
+
 def aStar(maze, loc1, loc2):
     dim = len(maze)
     if loc1 == loc2:
@@ -90,7 +93,7 @@ def aStarGetPath(maze, loc1, loc2):
                     # updating distance of nodes
                     heapq.heappush(fringe,(getHeuristic(neighbor, loc2)+((tup[1])[1])+1, (neighbor,tup[1][1]+1)))
                     # updating parent
-                    if neighbor!=(0,0):
+                    if neighbor!=loc1:
                         parents[neighbor] = item
         closed.add(item)
     # logic for returning a path
@@ -116,3 +119,11 @@ def getHeuristic(loc1, loc2):
 # Calcualted the Euclidean (straight line) distance between loc1 and loc2
 def getEuclideanDistance(loc1, loc2):
     return math.sqrt( ((loc2[0] - loc1[0]) ** 2) + ((loc2[1] - loc1[1]) ** 2))
+
+# showing A* on a maze
+def printedAStar(maze):
+    path =aStarGetPath(maze,(0,0),(len(maze)-1,len(maze)-1))
+    for loc in path:
+        # marking agents path
+        maze[loc[0]][loc[1]]=2
+    mazeGenerator.printMaze(maze)

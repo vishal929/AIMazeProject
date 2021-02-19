@@ -1,10 +1,6 @@
 #import for testing
-import Strategy1
-import Strategy2
-from Preliminaries.AStar import aStar
+from Strategies import Strategy1, Strategy2, OurStrategy
 from Preliminaries.mazeGenerator import generateMaze
-from Preliminaries   import BFS
-from Preliminaries import DFS
 from MazeVisualization import GUIAgentStep
 #tkinter for simple GUI
 import tkinter
@@ -89,7 +85,7 @@ class CanvasMaze(tkinter.Tk):
 
    # below method does not show gradually
    def showEntireStrategyOne(self):
-       Strategy1.doStrategyOne(self.maze,self.flammabilityRate)
+       Strategy1.doStrategyOne(self.maze, self.flammabilityRate)
        self.updateDrawing()
        self.mainloop()
 
@@ -108,7 +104,7 @@ class CanvasMaze(tkinter.Tk):
 
    # method that does not show gradually below
    def showEntireStrategyTwo(self):
-      Strategy2.doStrategyTwo(self.maze,self.flammabilityRate)
+      Strategy2.doStrategyTwo(self.maze, self.flammabilityRate)
       self.updateDrawing()
       self.mainloop()
 
@@ -123,7 +119,12 @@ class CanvasMaze(tkinter.Tk):
       self.showAlternateStrategyStep(None)
       self.mainloop()
 
-
+   # method that shows only the final result of our strategy
+   def showEntireOurStrategy(self):
+      # tolerance of 0.2 and trials of 50
+      OurStrategy.doOurAlternateStrategy(self.maze,self.flammabilityRate,0.2,50)
+      self.updateDrawing()
+      self.mainloop()
 
 
 
@@ -150,8 +151,5 @@ class ResizingCanvas(tkinter.Canvas):
 
 
 
-# test
-hi = CanvasMaze(200,0.3,0.1)
-hi.showGradualAlternateStrategy()
 
 

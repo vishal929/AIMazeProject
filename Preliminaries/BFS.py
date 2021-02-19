@@ -6,6 +6,9 @@ from collections import deque
 # Method to find a path between loc1 and loc2
 # returns true if loc2 is reachable from loc1, false otherwise
 # loc1 and loc2 are tuples of form (row,column)
+from Preliminaries import mazeGenerator
+
+
 def bfs(maze, loc1, loc2):
     dim = len(maze)
     if loc1 == loc2:
@@ -87,3 +90,10 @@ def bfsGetPath(maze,loc1,loc2):
     path.appendleft(traced)
     return path
 
+# showing bfs on a maze
+def printedBFS(maze):
+    path =bfsGetPath(maze,(0,0),(len(maze)-1,len(maze)-1))
+    for loc in path:
+        # marking agents path
+        maze[loc[0]][loc[1]]=2
+    mazeGenerator.printMaze(maze)

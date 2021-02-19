@@ -1,5 +1,6 @@
 from MazeVisualization import GUIDriver
 from Preliminaries import mazeGenerator, DFS, BFS, AStar
+from Strategies import Strategy1, Strategy2, OurStrategy
 
 
 # driver will take care of our user interface
@@ -19,6 +20,8 @@ from Preliminaries import mazeGenerator, DFS, BFS, AStar
 
 #functions below to gather data from user input
 # returns 0 for no GUI or 1 for GUI, valueError if user doesnt input y or n
+
+
 def askForGUI():
     while True:
         try:
@@ -159,20 +162,35 @@ if fireYesNo==1:
         else:
             # our strategy
             if gradual=="y":
-                pass
+                maze =GUIDriver.CanvasMaze(dim,blockingFactor,flammabilityRate)
+                maze.showGradualAlternateStrategy()
             else:
-                pass
+                maze = GUIDriver.CanvasMaze(dim,blockingFactor,flammabilityRate)
+                maze.showEntireOurStrategy()
     else:
         # CLI output
         if strategy==1:
-            maze = mazeGenerator.generateMaze(dim,blockingFactor)
-            mazeGenerator.printStrategyOne(maze,flammabilityRate)
+            if gradual=="y":
+                maze = mazeGenerator.generateMaze(dim,blockingFactor)
+                Strategy1.printStrategyOne(maze,flammabilityRate)
+            else:
+                maze = mazeGenerator.generateMaze(dim,blockingFactor)
+                Strategy1.printEntireStrategyOne(maze,flammabilityRate)
         elif strategy==2:
-            maze = mazeGenerator.generateMaze(dim, blockingFactor)
-            mazeGenerator.printStrategyTwo(maze, flammabilityRate)
+            if gradual=="y":
+                maze =mazeGenerator.generateMaze(dim,blockingFactor)
+                Strategy2.printStrategyTwo(maze,flammabilityRate)
+            else:
+                maze = mazeGenerator.generateMaze(dim, blockingFactor)
+                Strategy2.printEntireStrategyTwo(maze, flammabilityRate)
         else:
             # our strategy
-            pass
+            if gradual=="y":
+                maze = mazeGenerator.generateMaze(dim,blockingFactor)
+                OurStrategy.printOurStrategy(maze,flammabilityRate)
+            else:
+                maze = mazeGenerator.generateMaze(dim,blockingFactor)
+                OurStrategy.printOurEntireStrategy(maze,flammabilityRate)
 else:
     noFireStrategy = askNoFireSearch()
     if guiYesNo==1:
@@ -199,7 +217,7 @@ else:
                 else:
                     print("NO PATH FOUND!")
             else:
-                mazeGenerator.printedDFS(maze)
+                DFS.printedDFS(maze)
         elif noFireStrategy==2:
             maze = mazeGenerator.generateMaze(dim, blockingFactor)
             if askIsPath()=="y":
@@ -208,7 +226,7 @@ else:
                 else:
                     print("NO PATH FOUND!")
             else:
-                mazeGenerator.printedBFS(maze)
+                BFS.printedBFS(maze)
         else:
             maze = mazeGenerator.generateMaze(dim, blockingFactor)
             if askIsPath()=="y":
@@ -217,5 +235,5 @@ else:
                 else:
                     print("NO PATH FOUND!")
             else:
-                mazeGenerator.printedAStar(maze)
+                AStar.printedAStar(maze)
 

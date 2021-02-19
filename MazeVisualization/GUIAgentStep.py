@@ -2,11 +2,11 @@
 # GUI versions will definitely not run as fast, but will be better for visualization
 
 # idea is to call step(), redraw GUI canvas, call step() and continue
-from collections import deque
 
 from Preliminaries import DFS, BFS, AStar, mazeGenerator
 
-import OurStrategy
+from Strategies import OurStrategy
+
 
 # this will just run our dfs get path method and go through the whole path
 # this algo is FOR NO FIRE SITUATIONS!
@@ -84,7 +84,7 @@ def guiStrategyOne(maze,flammabilityRate,path):
 # i.e after each step we recalculate the shortest path
 # ran with currLoc starting equal to NONE
 def guiStrategyTwo(maze,flammabilityRate,currLoc):
-    if currLoc==None:
+    if currLoc is None:
         # starting the agent
         maze[0][0]=2
         # initializing fire
@@ -104,12 +104,13 @@ def guiStrategyTwo(maze,flammabilityRate,currLoc):
     else:
         # moving agent
         maze[locToMove[0]][locToMove[1]]=2
-        # checking for fire after generation
-        litSpots=mazeGenerator.lightMaze(maze,flammabilityRate)
-        if locToMove in litSpots:
+        if locToMove==(len(maze)-1,len(maze)-1):
+            # agent is SAFE!
             return (False,locToMove)
-        elif locToMove == (len(maze)-1,len(maze)-1):
-            # we are done now
+        # checking for fire after generation
+        mazeGenerator.lightMaze(maze,flammabilityRate)
+        if maze[locToMove[0]][locToMove[1]]==-1:
+            # agent burned
             return (False,locToMove)
         else:
             return (True,locToMove)
@@ -118,10 +119,10 @@ def guiStrategyTwo(maze,flammabilityRate,currLoc):
 def guiStrategyAlternateStrategy(maze,flammabilityRate,path):
     # number of trials is 50 for probability with fire generation
     # accepted tolerance is 0.2
-    if path == None:
+    if path is None:
         # this method below already initializes the fire
-        path = OurStrategy.evenMoreAlternateStrategy(maze, flammabilityRate, 0.2, 50)
-        if (path==None):
+        path = OurStrategy.ourAlternateStrategy(maze, flammabilityRate, 0.2, 50)
+        if path is None:
             return False,(0,0),None
         # moving agent to start
         path.popleft()
@@ -138,8 +139,9 @@ def guiStrategyAlternateStrategy(maze,flammabilityRate,path):
     else:
         # then we move agent and generate fire
         maze[locToMove[0]][locToMove[1]] = 2
-        fireSpots = mazeGenerator.lightMaze(maze, flammabilityRate)
-        if locToMove in fireSpots:
+        mazeGenerator.lightMaze(maze, flammabilityRate)
+        if maze[locToMove[0]][locToMove[1]]:
             return (False, locToMove, path)
         else:
             return (True, locToMove, path)
+

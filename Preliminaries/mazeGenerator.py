@@ -10,7 +10,6 @@ from random import randint
 # just populates a maze based on dimension and obstacleDensity
 # if dim<2 then exception raised
 # obstacleDensity is a probability from 0 to 1, if anything else inputted, then exception is raised
-from Preliminaries import DFS, BFS, AStar
 
 
 def generateMaze(dim, obstacleDensity):
@@ -99,9 +98,6 @@ def printMaze(maze):
     dim = len(maze)
     for i in range(dim):
         for j in range(dim):
-            print("---",end="")
-        print("\n")
-        for j in range(dim):
             print("|",end="")
             if maze[i][j]==0:
                 # o for open
@@ -116,109 +112,7 @@ def printMaze(maze):
                 # b for blocked
                 print("B",end="")
             print("|",end="")
-        print("\n")
+        print("")
     for i in range(dim):
         print("---",end="")
-    print("\n")
-
-# showing dfs on a maze
-def printedDFS(maze):
-    path=DFS.dfsGetPath(maze,(0,0),(len(maze)-1,len(maze)-1))
-    for loc in path:
-        # marking agents path
-        maze[loc[0]][loc[1]]=2
-    printMaze(maze)
-
-# showing bfs on a maze
-def printedBFS(maze):
-    path =BFS.bfsGetPath(maze,(0,0),(len(maze)-1,len(maze)-1))
-    for loc in path:
-        # marking agents path
-        maze[loc[0]][loc[1]]=2
-    printMaze(maze)
-
-# showing A* on a maze
-def printedAStar(maze):
-    path =AStar.aStarGetPath(maze,(0,0),(len(maze)-1,len(maze)-1))
-    for loc in path:
-        # marking agents path
-        maze[loc[0]][loc[1]]=2
-    printMaze(maze)
-
-# gradual printing of strategy 1 on a maze on fire
-def printStrategyOneStep(maze, flammabilityRate, path):
-    if path is None:
-        initializeFire(maze)
-        path =AStar.aStarGetPath(maze,(0,0),(len(maze)-1,len(maze)-1))
-        locToMove = path.popleft()
-        maze[locToMove[0]][locToMove[1]]=2
-        return True
-    else:
-        locToMove=path.popleft()
-        if maze[locToMove[0]][locToMove[1]]==-1:
-            # agent burns
-            return False
-        # moving agent
-        maze[locToMove[0]][locToMove[1]]=2
-        # generating fire
-        litSpots=lightMaze(maze,flammabilityRate);
-        if locToMove in litSpots:
-            # agent burned up
-            return False
-        if locToMove ==(len(maze)-1,len(maze)-1):
-            return False
-        else:
-            return True
-
-
-def printStrategyOne(maze,flammabilityRate):
-    path=None
-    while printStrategyOneStep(maze,flammabilityRate,path):
-        printMaze(maze)
-    # printing final state
-    printMaze(maze)
-
-
-
-# gradual printing of strategy 2 on a maze on fire
-# recalculating at each step
-def printStrategyTwoStep(maze,flammabilityRate,loc):
-    if loc==(0,0):
-        # need to initialize fire
-        initializeFire(maze)
-        maze[0][0]=2
-    path = AStar.aStarGetPath(maze,loc,(len(maze)-1,len(maze)-1))
-    # popping already taken path
-    path.popleft()
-    # getting new spot to move to
-    locToMove = path.popleft()
-    if maze[locToMove[0]][locToMove[1]] == -1:
-        # agent burns
-        return False,locToMove
-    # moving agent
-    maze[locToMove[0]][locToMove[1]] = 2
-    # generating fire
-    litSpots = lightMaze(maze, flammabilityRate);
-    if locToMove in litSpots:
-        # agent burned up
-        return False,locToMove
-    if locToMove == (len(maze) - 1, len(maze) - 1):
-        return False,locToMove
-    else:
-        return True,locToMove
-
-
-def printStrategyTwo(maze,flammabilityRate):
-    loc=(0,0)
-    result = printStrategyTwoStep(maze,flammabilityRate,loc)
-    loc=result[1]
-    printMaze(maze)
-    while result[0]:
-        result=printStrategyTwoStep(maze,flammabilityRate,loc)
-        loc=result[1]
-        printMaze(maze)
-    printMaze(maze)
-
-
-
-# gradual printing of our strategy on a maze on fire
+    print("")
